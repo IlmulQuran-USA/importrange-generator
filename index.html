@@ -8,338 +8,126 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-
-    <style>
-      :root {
-        /* English first, Bengali second (fallback) */
-        --font-en: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial,
-          sans-serif;
-        --font-bn: "AkkasUnicode", "Noto Sans Bengali";
-      }
-
-      /* Load your local Unicode font from /fonts/ */
-      @font-face {
-        font-family: "AkkasUnicode";
-        src: url("/AkkasUnicode.woff2") format("woff2"),
-          url("/AkkasUnicode.woff") format("woff"),
-          url("/AkkasUnicode.ttf") format("truetype"); /* your local file */
-        font-weight: 400;
-        font-style: normal;
-        font-display: swap;
-        /* Restrict to Bengali block so it never replaces English glyphs */
-        unicode-range: U+0980-09FF, U+200C-200D, U+25CC;
-      }
- 
-      html,
-      body {
-        font-family: var(--font-en), var(--font-bn);
-      }
-
-      /* For parts that are *Bangla-dominant*, flip the order */
-      .bn,
-      [lang="bn"] {
-        font-family: var(--font-bn), var(--font-en);
-        line-height: 1.2;
-      }
-
-      /* Optional: ensure form controls inside .bn also show Bangla font */
-      .bn input,
-      .bn textarea,
-      .bn button,
-      .bn label,
-      .bn small {
-        font-family: var(--font-bn), var(--font-en);
-      }
-
-      /* --- Global reset to make padding behave (prevents overflow) --- */
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #fff6f0;
-        color: #333;
-        margin: 0;
-        padding: 0;
-      }
-      header {
-        background-color: #ff9b44;
-        padding: 1rem;
-        text-align: center;
-        font-size: 1.5rem;
-        font-weight: bold;
-        border-bottom: 3px solid #d2812a;
-      }
-      .container {
-        max-width: 900px;
-        margin: 2rem auto;
-        background: #fffaf5;
-        padding: 2rem;
-        border-radius: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      }
-      label {
-        display: block;
-        margin-top: 1rem;
-        font-weight: bold;
-      }
-
-      /* --- Form controls --- */
-      input,
-      textarea {
-        width: 100%;
-        margin-top: 0.5rem;
-        padding: 0.7rem; /* requested inner spacing */
-        border: 1px solid #e69138;
-        border-radius: 8px;
-        font-size: 1rem;
-      }
-
-      p {
-        margin: 10px 0 5px 0;
-        font-weight: 550;
-      }
-
-      /* Buttons keep compact height */
-      button {
-        width: 100%;
-        margin-top: 1rem;
-        padding: 0.7rem;
-        border: 1px solid #e69138;
-        border-radius: 8px;
-        font-size: 1rem;
-        background-color: #ff802b;
-        color: #fff;
-        cursor: pointer;
-        transition: background 0.3s;
-      }
-      button:hover:not(:disabled) {
-        background-color: #e67300;
-      }
-      button:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-      }
-
-      .results {
-        margin-top: 2rem;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      /* A row that holds the rounded box (70%) and the copy button (30%) */
-      .result-row {
-        position: relative; /* for the cell tag placement */
-        display: flex;
-        align-items: stretch; /* make both children equal height */
-        margin: 0;
-        gap: 10px;
-      }
-
-      /* Rounded pill: 70% width, left side */
-      .link-box {
-        width: 70%;
-        background: #ffe0c7;
-        border: 2px solid #e69138;
-        border-radius: 50px 0 0 50px; /* rounded left, straight right to meet button */
-        padding: 0.8rem 1rem;
-        display: flex;
-        align-items: center; /* vertically center content */
-        justify-content: flex-start; /* ensure decent click/visual area */
-      }
-
-      /* Keep existing class names and styles, adapted for the new layout */
-      .link-text {
-        flex: 1;
-        margin-right: 0.5rem;
-        font-family: monospace;
-        font-size: 0.9rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis; /* mask visually; full formula still copied */
-      }
-
-      .serial {
-        font-weight: bold;
-        margin-right: 0.75rem;
-        color: #cc5200;
-        white-space: nowrap;
-      }
-
-      /* Copy button: 30% width, right side, same height as pill */
-      .copy-btn {
-        width: 30%;
-        background: #ff944d;
-        border: none;
-        color: white;
-        padding: 0; /* height comes from flex stretch */
-        border-radius: 0 50px 50px 0; /* rounded right side */
-        cursor: pointer;
-        transition: background 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600; /* matches pill min-height */
-      }
-      .copy-btn:hover:not(:disabled) {
-        background: #e67300;
-      }
-      .copy-btn:disabled {
-        background: #aaa;
-        cursor: not-allowed;
-      }
-
-      /* Cell number outside the rounded box, top-right corner of the row */
-      .cell-tag {
-        position: absolute;
-        top: -12px;
-        right: 0;
-        background: #cc5200;
-        color: #fff;
-        padding: 2px 10px;
-        font-size: 0.75rem;
-        border-radius: 12px;
-        line-height: 1.4;
-        white-space: nowrap;
-      }
-
-      /* Optional: make 70/30 stack vertically on very small screens */
-      @media (max-width: 520px) {
-        .result-row {
-          flex-direction: column;
-        }
-        .link-box,
-        .copy-btn {
-          width: 100%;
-          border-radius: 50px; /* both rounded when stacked */
-        }
-        .copy-btn {
-          margin-top: 6px;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/script.js" defer></script>
+    <link rel="icon" type="image/png" href="/favicon.png">
   </head>
+
   <body>
     <header>IMPORTRANGE GENERATOR</header>
     <div class="container bn">
-      <p
-        ><span>Spreadsheet Link(s)</span> - একাধিক হলে প্রতি লাইনে একটি লিংক (যদি একটাই হয় এক
-        লাইনেই দিন)</p
-      >
-      <textarea
-        id="sheetLinks"
-        rows="3"
-        placeholder="Paste Google Sheet links here..."
-      ></textarea>
-      <small
-        >উদাহরণ: একটাই লিংক দিলে প্রতিটি সেলের জন্য সেই লিংক ব্যবহার হবে। <br />
-        একাধিক লিংক দিলে প্রতিটি লিংকের জন্য একই সেল তালিকা পুনরাবৃত্তি করে তৈরি
-        করবে।</small
-      >
+      <div class="two-col">
+        <!-- RIGHT COLUMN EXTRA: Time & Date for Bangladesh -->
+        <div class="left-column">
+          <div class="card info-card">
+            <div class="time-row">
+              <svg class="clock-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 1.75A10.25 10.25 0 1 0 22.25 12 10.262 10.262 0 0 0 12 1.75Zm0 18.5A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25Zm.75-13.5a.75.75 0 0 0-1.5 0V12a.75.75 0 0 0 .33.62l3.5 2.33a.75.75 0 1 0 .84-1.24l-3.17-2.1Z"
+                />
+              </svg>
+              <span id="bdTime">--:--:--</span>
+            </div>
 
-      <p><span>Sheet Name </span>(উদাহরণ: Jan-Dec-2025)</p>
-      <input type="text" id="sheetName" value="Jan-Dec-2025" />
+            <div class="calendar-lines">
+              <div class="calendar-line" lang="bn">
+                <span id="dateBn"></span>
+              </div>
+            </div>
+          </div>
 
-      <p><span>Cell No</span> - কমা/স্পেস/নতুন লাইনে আলাদা করতে পারেন</p>
-      <textarea
-        id="cellAddresses"
-        rows="3"
-        placeholder="Example: D109, E109, F109 ..."
-      ></textarea>
-      <small
-        >ব্যবহার: লিংক পেস্ট → সেল নাম্বার দিন → Generate Links চাপুন। <br />
-        প্রতিটি সেল আলাদা আলাদা IMPORTRANGE হিসেবে তৈরি হবে।</small
-      >
-      <button onclick="generateLinks()">Generate Links</button>
-      <button onclick="clearAll()">All Clear</button>
+          <!-- RIGHT CARD: composer -->
+          <div class="card">
+            <p style="margin-top: 8px"><span>Compose Cells</span> — কলাম + রো মিলিয়ে সেল বানান</>
+            <p style="margin-top: 0px">
+              <span>Column Letters</span> (উদাহরণ: A / AA / A C E)
+            </p>
+            <input
+              type="text"
+              id="cellLetters"
+              placeholder="e.g., A  C  AA"
+              oninput="updateComposedCells()"
+            />
 
+            <p><span>Row Numbers </span>(উদাহরণ: 10 12 20 বা কমা/নিউলাইন)</p>
+            <input
+              type="text"
+              id="cellNumbers"
+              placeholder="e.g., 10 12 20"
+              oninput="updateComposedCells()"
+            />
+
+            <div class="hint">
+              আপনি একাধিক কলাম লেটার এবং একাধিক রো নম্বর দিতে পারেন। দুটো মিলে
+              নিচে স্পেস দিয়ে সেলগুলো দেখাবে (যেমন: <code>A10 A12 AA10</code>).
+            </div>
+
+            <p>Composed (read-only)</p>
+            <textarea
+              id="composedCells"
+              rows="3"
+              placeholder="A10 A12 A20 AA10 AA12 AA20"
+              readonly
+            ></textarea>
+
+            <button id="copyComposedBtn" onclick="copyComposedCells()" disabled>
+              Copy Cell Number
+            </button>
+            <button onclick="clearComposer()">Clear This Card</button>
+          </div>
+        </div>
+
+        <!-- LEFT CARD: main inputs -->
+        <div class="card">
+          <p>
+            <span>Spreadsheet Link(s)</span> <br />
+            একাধিক হলে প্রতি লাইনে একটি লিংক (যদি একটাই হয় এক লাইনে দিন)
+          </p>
+          <textarea
+            id="sheetLinks"
+            rows="3"
+            placeholder="Paste Google Sheet links here..."
+          ></textarea>
+          <div class="hint-without-margin">
+            উদাহরণ: একটাই লিংক দিলে প্রতিটি সেলের জন্য সেই লিংক ব্যবহার হবে।
+            <br />একাধিক লিংক দিলে প্রতিটি লিংকের জন্য একই সেল তালিকা
+            পুনরাবৃত্তি করে তৈরি করবে।
+          </div>
+
+          <p><span>Sheet Name </span>(উদাহরণ: Jan-Dec-2025)</p>
+          <input type="text" id="sheetName" value="Jan-Dec-2025" />
+
+          <p><span>Cell No</span> - কমা/স্পেস/নতুন লাইনে আলাদা করতে পারেন</p>
+          <textarea
+            id="cellAddresses"
+            rows="3"
+            placeholder="Example: D109, E109, F109 ..."
+          ></textarea>
+          <div class="hint-without-margin">
+            ব্যবহার: লিংক পেস্ট → সেল নাম্বার দিন → Generate Links চাপুন।
+            <br />প্রতিটি সেল আলাদা আলাদা IMPORTRANGE হিসেবে তৈরি হবে।
+          </div>
+
+          <button onclick="generateLinks()">Generate Links</button>
+          <button onclick="clearAll()">All Clear</button>
+        </div>
+      </div>
+
+      <!-- Footer note (centered) -->
+      <div class="footer-note">
+        Developed ❤️ by 
+        <a
+          id="githubLink"
+          href="https://github.com/muhammadnurulahsan"
+          target="_blank"
+          rel="noopener"
+          >Muhammad Nurul Ahsan</a
+        >
+      </div>
+
+      <!-- RESULTS -->
       <div class="results" id="results"></div>
     </div>
-
-    <script>
-      // Mask the displayed formula so the full link isn't shown,
-      // but keep the original for copying.
-      function maskFormulaForDisplay(formula) {
-        return formula.replace(/"(https?:\/\/[^"]+)"/, '"<link>"');
-      }
-
-      function generateLinks() {
-        const links = document
-          .getElementById("sheetLinks")
-          .value.trim()
-          .split(/\n+/)
-          .filter(Boolean);
-        const sheetName = document.getElementById("sheetName").value.trim();
-        const cells = document
-          .getElementById("cellAddresses")
-          .value.trim()
-          .split(/[\s,]+/)
-          .filter(Boolean);
-        const resultsDiv = document.getElementById("results");
-        resultsDiv.innerHTML = "";
-        let counter = 1;
-
-        links.forEach((link) => {
-          cells.forEach((cell) => {
-            const formula = `=IMPORTRANGE("${link}","${sheetName}!${cell}")`;
-            const displayFormula = maskFormulaForDisplay(formula);
-
-            // Row container (to position the cell tag)
-            const row = document.createElement("div");
-            row.className = "result-row";
-
-            // Left rounded pill (70%)
-            const box = document.createElement("div");
-            box.className = "link-box";
-
-            const serial = document.createElement("div");
-            serial.className = "serial";
-            serial.textContent = `Link ${counter}`;
-
-            const text = document.createElement("div");
-            text.className = "link-text";
-            text.textContent = displayFormula; // masked visually
-
-            box.appendChild(serial);
-            box.appendChild(text);
-
-            // Right copy button (30%)
-            const copyBtn = document.createElement("button");
-            copyBtn.className = "copy-btn";
-            copyBtn.textContent = "Copy";
-            copyBtn.onclick = () => {
-              navigator.clipboard.writeText(formula).then(() => {
-                copyBtn.textContent = "Copied";
-                copyBtn.disabled = true;
-              });
-            };
-
-            // Cell tag outside, top-right
-            const tag = document.createElement("div");
-            tag.className = "cell-tag";
-            tag.textContent = cell; // show only the cell number as requested
-
-            // Assemble
-            row.appendChild(box);
-            row.appendChild(copyBtn);
-            row.appendChild(tag);
-            resultsDiv.appendChild(row);
-
-            counter++;
-          });
-        });
-      }
-
-      function clearAll() {
-        document.getElementById("sheetLinks").value = "";
-        document.getElementById("sheetName").value = "Jan-Dec-2025";
-        document.getElementById("cellAddresses").value = "";
-        document.getElementById("results").innerHTML = "";
-      }
-    </script>
   </body>
 </html>
+
