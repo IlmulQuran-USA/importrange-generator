@@ -149,7 +149,7 @@ function generateLinks() {
 
       counter++;
       linkCount++;
-      if (linkCount % 6 === 0) {
+      if (linkCount % 8 === 0) {
         const divider = document.createElement("div");
         divider.className = "group-divider";
         divider.setAttribute("role", "separator");
@@ -161,7 +161,7 @@ function generateLinks() {
 
 function clearAll() {
   document.getElementById("sheetLinks").value = "";
-  document.getElementById("sheetName").value = "Jan-Dec-2025";
+  document.getElementById("sheetName").value = "Jan-Dec-2026";
   document.getElementById("cellAddresses").value = "";
   document.getElementById("results").innerHTML = "";
   clearComposer();
