@@ -175,10 +175,10 @@ function updateDhakaDateTime() {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-    hour12: false,
+    hour12: true,
     timeZone: tz,
   });
-  document.getElementById("bdTime").textContent = timeFmt.format(new Date());
+  document.getElementById("bdTime").textContent = timeFmt.format(new Date()).toUpperCase();
 
   const bnFmt = new Intl.DateTimeFormat("bn-BD", {
     weekday: "long",
